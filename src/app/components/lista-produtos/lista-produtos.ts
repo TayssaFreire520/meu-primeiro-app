@@ -11,6 +11,7 @@ export class ListaProdutos {
   produtos = [
     { nome: 'Notebook', preco: 3800 },
     { nome: 'Mouse', preco: 179 },
+     { nome: 'Fone', preco: 90 },
   ];
 
   exibirProduto(nome: string) {
