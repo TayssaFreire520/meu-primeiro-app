@@ -15,6 +15,8 @@ type Produto = {
 export class ProdutosService {
   private http = inject(HttpClient);
 
+  //private API = 'https://fakestoreapi.com/products-erro';
+
   private API = 'https://fakestoreapi.com/products';
 
   buscarProdutos() {
