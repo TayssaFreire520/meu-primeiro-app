@@ -1,23 +1,18 @@
 <!-- Seção de Produtos -->
 <section>
   <h2>Produtos:</h2>
+
   @if (carregando()) {
     <p>Carregando produtos...</p>
   }
 
-  @if (erro()) {
-    <p style="color: red">
-      {{ erro() }}
-    </p>
-    <button (click)="carregarProdutos()">Tentar novamente</button>
-  }
-
-  @if (!carregando() && !erro()) {
-    <p>Total de produtos: {{ totalProdutos() }}</p>
-    <hr />
-    @for (item of produtos(); track $index) {
-      <app-produto [nome]="item.nome" [preco]="item.preco" />
-    }
+  @for (item of produtos(); track $index) {
+    <app-produto
+      [nome]="item.nome"
+      [preco]="item.preco"
+      (produtoSelecionado)="exibirProduto($event)"
+      (produtoAdicionado)="adicionarAoCarrinho($event)"
+    />
   }
 
   <h2>
