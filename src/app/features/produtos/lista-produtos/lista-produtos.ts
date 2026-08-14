@@ -24,6 +24,8 @@ export class ListaProdutos {
   // o começo de uma nova era (Carrinho de compras)
   carrinho = signal<{ nome: string; preco: number }[]>([]);
 
+  erro = signal<string | null>(null);
+
   //computed
   totalProdutos = computed(() => this.produtos().length); // observa outro sinal automaticamente
 
@@ -57,8 +59,8 @@ export class ListaProdutos {
   } // fim do constructor
 
   carregarProdutos() {
+    this.erro.set(null); // limpa erro anterior
     this.carregando.set(true);
-
     this.produtosService.buscarProdutos().subscribe({
       next: (dados) => {
         const produtos = this.produtosService.transformarProdutos(dados);
@@ -67,6 +69,7 @@ export class ListaProdutos {
       },
       error: (erro) => {
         console.error('Erro ao carregar produtos:', erro);
+        this.erro.set('Erro ao carregar produtos. Verifique sua conexão e tente novamente.');
         this.carregando.set(false);
       },
     });
