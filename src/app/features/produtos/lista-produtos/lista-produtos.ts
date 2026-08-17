@@ -1,8 +1,9 @@
 import { Component, signal, computed, effect, inject } from '@angular/core';
-import { ProdutosService } from '../produtos.service';
+import { MatButtonModule } from '@angular/material/button';
 
 import { Produto } from '../produto/produto';
-import { MatButtonModule } from '@angular/material/button';
+import { ProdutosService } from '../../../core/services/produtos.service';
+import { CarrinhoService } from '../../../core/services/carrinho.service';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -12,6 +13,15 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class ListaProdutos {
   private produtosService = inject(ProdutosService);
+
+  // o começo de uma nova era (Carrinho de compras)
+  carrinhoService = inject(CarrinhoService);
+
+  quantidadeCarrinho = this.carrinhoService.quantidade;
+  totalCarrinho = this.carrinhoService.total;
+
+  erro = signal<string | null>(null);
+
   //========================================
   //                   SIGNALS
   //=============================================
@@ -22,23 +32,12 @@ export class ListaProdutos {
 
   produtoSelecionado = signal<string | null>(null);
 
-  // o começo de uma nova era (Carrinho de compras)
-  carrinho = signal<{ nome: string; preco: number }[]>([]);
-
-  erro = signal<string | null>(null);
-
   //computed
   totalProdutos = computed(() => this.produtos().length); // observa outro sinal automaticamente
 
   valorTotal = computed(() => {
     return this.produtos().reduce((total, item) => total + item.preco, 0); // reduce -> pega so quem tá interessada
   }); // essa linha faz a soma dos produtos.
-
-  quantidadeCarrinho = computed(() => this.carrinho().length);
-
-  totalCarrinho = computed(() => {
-    return this.carrinho().reduce((total, item) => total + item.preco, 0);
-  });
 
   constructor() {
     // carrega da API
@@ -94,6 +93,6 @@ export class ListaProdutos {
   }
 
   adicionarAoCarrinho(produto: { nome: string; preco: number }) {
-    this.carrinho.update((listaAtual) => [...listaAtual, produto]);
+    this.carrinhoService.adicionar(produto);
   }
 }
